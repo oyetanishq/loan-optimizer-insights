@@ -35,7 +35,13 @@ const LoanCalculator = () => {
         setStandardEMI(emi);
         
         setCalculationComplete(true);
-        toast.success("Calculation completed successfully");
+        
+        // Add a specific toast about prepayment being fixed
+        if (params.extraEmiPerYear > 0) {
+          toast.success("Calculation completed. Extra EMI payments are fixed at the initial EMI amount.");
+        } else {
+          toast.success("Calculation completed successfully");
+        }
       } catch (error) {
         console.error("Calculation error:", error);
         toast.error("Error in calculation: " + (error instanceof Error ? error.message : "Unknown error"));
@@ -74,6 +80,11 @@ const LoanCalculator = () => {
               <div className="text-center">
                 <h2 className="text-lg font-medium text-muted-foreground">Standard Monthly EMI</h2>
                 <p className="text-4xl font-bold mt-1">{formatCurrency(standardEMI)}</p>
+                {monthlyData.some(data => data.prepayment > 0) && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Extra EMI payments are fixed at this initial amount
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
