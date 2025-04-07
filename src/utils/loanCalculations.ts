@@ -2,7 +2,7 @@
 /**
  * Calculate the standard EMI
  * @param loanAmount Initial loan amount
- * @param annualInterestRate Annual interest rate (in decimal)
+ * @param annualInterestRate Annual interest rate (in percentage)
  * @param tenureInYears Loan tenure in years
  * @returns Monthly EMI amount
  */
@@ -11,7 +11,8 @@ export const calculateEMI = (
   annualInterestRate: number,
   tenureInYears: number
 ): number => {
-  const monthlyInterestRate = annualInterestRate / 12;
+  // Convert annual interest rate from percentage to monthly decimal
+  const monthlyInterestRate = annualInterestRate / 12 / 100;
   const totalMonths = tenureInYears * 12;
   
   // Handle edge case when interest rate is 0
@@ -31,14 +32,14 @@ export const calculateEMI = (
 /**
  * Calculate monthly interest
  * @param outstandingLoan Outstanding loan balance
- * @param annualInterestRate Annual interest rate (in decimal)
+ * @param annualInterestRate Annual interest rate (in percentage)
  * @returns Interest amount for the month
  */
 export const calculateMonthlyInterest = (
   outstandingLoan: number,
   annualInterestRate: number
 ): number => {
-  return outstandingLoan * (annualInterestRate / 12);
+  return outstandingLoan * (annualInterestRate / 12 / 100);
 };
 
 /**
@@ -50,10 +51,6 @@ export interface LoanParameters {
   tenureInYears: number;
   extraEmiPerYear: number;
   emiHikePercentage: number;
-  startingSalary: number;
-  salaryIncrementPercentage: number;
-  jobSwitchMonth: number;
-  jobSwitchIncrementPercentage: number;
 }
 
 /**
@@ -66,9 +63,6 @@ export interface MonthlyAmortization {
   towardsInterest: number;
   outstandingLoan: number;
   prepayment: number;
-  salary: number;
-  salaryWithJobSwitch: number;
-  increment: number;
   isPaid: boolean;
 }
 
@@ -101,17 +95,13 @@ export const generateAmortizationSchedule = (
     tenureInYears,
     extraEmiPerYear,
     emiHikePercentage,
-    startingSalary,
-    salaryIncrementPercentage,
-    jobSwitchMonth,
-    jobSwitchIncrementPercentage,
   } = params;
 
   // Calculate base EMI without prepayments
   const baseEMI = calculateEMI(loanAmount, interestRate, tenureInYears);
   
   // Calculate total interest without prepayments
-  const totalInterestWithoutPrepayment = baseEMI * tenureInYears * 12 - loanAmount;
+  const totalInterestWithoutPrepayment = (baseEMI * tenureInYears * 12) - loanAmount;
   
   // Initialize variables for prepayment scenario
   const totalMonths = tenureInYears * 12;
@@ -121,7 +111,6 @@ export const generateAmortizationSchedule = (
   let totalInterestWithPrepayment = 0;
   let totalPrincipalPaid = 0;
   const monthlyData: MonthlyAmortization[] = [];
-  let currentSalary = startingSalary;
   
   // Process each month until loan is paid off or tenure is reached
   while (outstandingLoan > 0 && currentMonth <= totalMonths) {
@@ -158,24 +147,6 @@ export const generateAmortizationSchedule = (
     outstandingLoan = Math.max(0, outstandingLoan - principalPayment - prepayment);
     totalPrincipalPaid += principalPayment + prepayment;
     
-    // Calculate salary with increments and job switch
-    let salaryWithJobSwitch = currentSalary;
-    let increment = 0;
-    
-    // Apply annual salary increment
-    if (currentMonth > 12 && currentMonth % 12 === 1) {
-      increment = currentSalary * (salaryIncrementPercentage / 100);
-      currentSalary += increment;
-      salaryWithJobSwitch = currentSalary;
-    }
-    
-    // Apply job switch increment if applicable
-    if (currentMonth === jobSwitchMonth) {
-      const jobSwitchIncrement = currentSalary * (jobSwitchIncrementPercentage / 100);
-      salaryWithJobSwitch = currentSalary + jobSwitchIncrement;
-      increment = jobSwitchIncrement;
-    }
-    
     // Add data for current month
     monthlyData.push({
       month: currentMonth,
@@ -184,18 +155,10 @@ export const generateAmortizationSchedule = (
       towardsInterest: monthlyInterest,
       outstandingLoan: outstandingLoan,
       prepayment: prepayment,
-      salary: currentSalary,
-      salaryWithJobSwitch: salaryWithJobSwitch,
-      increment: increment,
       isPaid: outstandingLoan === 0
     });
     
     currentMonth++;
-    
-    // Update current salary if there was a job switch
-    if (salaryWithJobSwitch !== currentSalary) {
-      currentSalary = salaryWithJobSwitch;
-    }
   }
   
   // Calculate summary metrics

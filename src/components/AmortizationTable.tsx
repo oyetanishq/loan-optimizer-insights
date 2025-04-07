@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { formatCurrency, formatNumber, MonthlyAmortization } from "@/utils/loanCalculations";
+import { formatCurrency, MonthlyAmortization } from "@/utils/loanCalculations";
 
 interface AmortizationTableProps {
   data: MonthlyAmortization[];
@@ -88,8 +88,6 @@ const AmortizationTable = ({ data }: AmortizationTableProps) => {
                 <TableHead>Towards Interest</TableHead>
                 <TableHead>Outstanding Loan</TableHead>
                 <TableHead>Prepayment</TableHead>
-                <TableHead>Salary</TableHead>
-                <TableHead>Increment</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -105,10 +103,6 @@ const AmortizationTable = ({ data }: AmortizationTableProps) => {
                   <TableCell>{formatCurrency(item.outstandingLoan)}</TableCell>
                   <TableCell>
                     {item.prepayment > 0 ? formatCurrency(item.prepayment) : "-"}
-                  </TableCell>
-                  <TableCell>{formatCurrency(item.salaryWithJobSwitch)}</TableCell>
-                  <TableCell>
-                    {item.increment > 0 ? formatCurrency(item.increment) : "-"}
                   </TableCell>
                 </TableRow>
               ))}

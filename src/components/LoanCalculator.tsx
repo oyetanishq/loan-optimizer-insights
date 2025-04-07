@@ -8,7 +8,7 @@ import SummaryMetrics from "./SummaryMetrics";
 import AmortizationTable from "./AmortizationTable";
 import LoanCharts from "./LoanCharts";
 import { generateAmortizationSchedule, LoanParameters, MonthlyAmortization, LoanSummaryMetrics, calculateEMI } from "@/utils/loanCalculations";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/utils/loanCalculations";
 
 const LoanCalculator = () => {
