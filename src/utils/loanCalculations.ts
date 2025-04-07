@@ -1,4 +1,3 @@
-
 /**
  * Calculate the standard EMI
  * @param loanAmount Initial loan amount
@@ -112,11 +111,26 @@ export const generateAmortizationSchedule = (
   let totalPrincipalPaid = 0;
   const monthlyData: MonthlyAmortization[] = [];
   
+  // Keep track of the prepayment amount (starts equal to EMI)
+  let currentPrepaymentAmount = baseEMI;
+  let lastYearProcessed = 0;
+  
   // Process each month until loan is paid off or tenure is reached
   while (outstandingLoan > 0 && currentMonth <= totalMonths) {
     // Check if EMI should be hiked annually
-    if (emiHikePercentage > 0 && currentMonth > 12 && currentMonth % 12 === 1) {
-      currentEmi = currentEmi * (1 + emiHikePercentage / 100);
+    const currentYear = Math.floor((currentMonth - 1) / 12) + 1;
+    if (emiHikePercentage > 0 && currentYear > lastYearProcessed) {
+      // Only increase EMI after the first year
+      if (currentYear > 1) {
+        currentEmi = currentEmi * (1 + emiHikePercentage / 100);
+      }
+      
+      // Also increase the prepayment amount
+      if (currentYear > 1) {
+        currentPrepaymentAmount = currentPrepaymentAmount * (1 + emiHikePercentage / 100);
+      }
+      
+      lastYearProcessed = currentYear;
     }
     
     // Calculate interest for current month
@@ -135,7 +149,7 @@ export const generateAmortizationSchedule = (
     // Apply prepayment if applicable
     let prepayment = 0;
     if (extraEmiPerYear > 0 && currentMonth % (12 / extraEmiPerYear) === 0) {
-      prepayment = currentEmi;
+      prepayment = currentPrepaymentAmount;
       
       // Ensure prepayment doesn't exceed outstanding loan
       if (prepayment > outstandingLoan - principalPayment) {

@@ -10,6 +10,7 @@ import LoanCharts from "./LoanCharts";
 import { generateAmortizationSchedule, LoanParameters, MonthlyAmortization, LoanSummaryMetrics, calculateEMI } from "@/utils/loanCalculations";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/utils/loanCalculations";
+import { toast } from "sonner";
 
 const LoanCalculator = () => {
   const { theme, setTheme } = useTheme();
@@ -34,9 +35,10 @@ const LoanCalculator = () => {
         setStandardEMI(emi);
         
         setCalculationComplete(true);
+        toast.success("Calculation completed successfully");
       } catch (error) {
         console.error("Calculation error:", error);
-        // Here you would normally show an error toast
+        toast.error("Error in calculation: " + (error instanceof Error ? error.message : "Unknown error"));
       } finally {
         setIsLoading(false);
       }
