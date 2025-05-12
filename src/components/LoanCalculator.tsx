@@ -56,49 +56,72 @@ const LoanCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold">
-            Loan Prepayment Calculator
-          </h1>
-          <Button variant="outline" size="icon" onClick={toggleTheme}>
-            {theme === "light" ? (
-              <MoonIcon className="h-5 w-5" />
-            ) : (
-              <SunIcon className="h-5 w-5" />
-            )}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        </div>
-
-        <LoanForm onCalculate={handleCalculate} isLoading={isLoading} />
-
-        {calculationComplete && standardEMI > 0 && (
-          <Card className="w-full mb-8">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <h2 className="text-lg font-medium text-muted-foreground">Standard Monthly EMI</h2>
-                <p className="text-4xl font-bold mt-1">{formatCurrency(standardEMI)}</p>
-                {monthlyData.some(data => data.prepayment > 0) && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Extra EMI payments are fixed at this initial amount
-                  </p>
-                )}
+      <div className="min-h-screen p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+              <div className="flex justify-between items-center mb-8">
+                  <h1 className="text-2xl md:text-3xl font-bold flex items-center">
+                      {theme === "light" ? (
+                          <img
+                              src="/black_logo.png"
+                              alt="calculator logo"
+                              className="w-16"
+                          />
+                      ) : (
+                          <img
+                              src="/white_logo.png"
+                              alt="calculator logo"
+                              className="w-16"
+                          />
+                      )}
+                      Loan Prepayment Calculator
+                  </h1>
+                  <Button variant="outline" size="icon" onClick={toggleTheme}>
+                      {theme === "light" ? (
+                          <MoonIcon className="h-5 w-5" />
+                      ) : (
+                          <SunIcon className="h-5 w-5" />
+                      )}
+                      <span className="sr-only">Toggle theme</span>
+                  </Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
 
-        {calculationComplete && summaryMetrics && (
-          <>
-            <SummaryMetrics metrics={summaryMetrics} />
-            <LoanCharts monthlyData={monthlyData} summaryMetrics={summaryMetrics} />
-            <AmortizationTable data={monthlyData} />
-          </>
-        )}
+              <LoanForm onCalculate={handleCalculate} isLoading={isLoading} />
+
+              {calculationComplete && standardEMI > 0 && (
+                  <Card className="w-full mb-8">
+                      <CardContent className="pt-6">
+                          <div className="text-center">
+                              <h2 className="text-lg font-medium text-muted-foreground">
+                                  Standard Monthly EMI
+                              </h2>
+                              <p className="text-4xl font-bold mt-1">
+                                  {formatCurrency(standardEMI)}
+                              </p>
+                              {monthlyData.some(
+                                  (data) => data.prepayment > 0
+                              ) && (
+                                  <p className="text-sm text-muted-foreground mt-2">
+                                      Extra EMI payments are fixed at this
+                                      initial amount
+                                  </p>
+                              )}
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+
+              {calculationComplete && summaryMetrics && (
+                  <>
+                      <SummaryMetrics metrics={summaryMetrics} />
+                      <LoanCharts
+                          monthlyData={monthlyData}
+                          summaryMetrics={summaryMetrics}
+                      />
+                      <AmortizationTable data={monthlyData} />
+                  </>
+              )}
+          </div>
       </div>
-    </div>
   );
 };
 
