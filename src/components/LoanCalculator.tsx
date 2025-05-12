@@ -59,27 +59,26 @@ const LoanCalculator = () => {
       <div className="min-h-screen p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
               <div className="flex justify-between items-center mb-8">
-                  <h1 className="text-2xl md:text-3xl font-bold flex items-center">
+                  <h1 className="flex items-center">
                       {theme === "light" ? (
                           <img
                               src="/black_logo.png"
                               alt="calculator logo"
-                              className="w-16"
+                              className="w-24"
                           />
                       ) : (
                           <img
                               src="/white_logo.png"
                               alt="calculator logo"
-                              className="w-16"
+                              className="w-24"
                           />
                       )}
-                      Loan Prepayment Calculator
                   </h1>
                   <Button variant="outline" size="icon" onClick={toggleTheme}>
                       {theme === "light" ? (
-                          <MoonIcon className="h-5 w-5" />
+                          <MoonIcon className="h-6 w-6" />
                       ) : (
-                          <SunIcon className="h-5 w-5" />
+                          <SunIcon className="h-6 w-6" />
                       )}
                       <span className="sr-only">Toggle theme</span>
                   </Button>
