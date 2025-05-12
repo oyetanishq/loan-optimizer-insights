@@ -64,13 +64,13 @@ const LoanCalculator = () => {
                           <img
                               src="/black_logo.png"
                               alt="calculator logo"
-                              className="w-40"
+                              className="w-24"
                           />
                       ) : (
                           <img
                               src="/white_logo.png"
                               alt="calculator logo"
-                              className="w-40"
+                              className="w-24"
                           />
                       )}
                   </h1>
